@@ -22,6 +22,7 @@ public class CandidateController {
 
 
     @PostMapping(value = "/add/Test")
+
     public String InsertTest()
     {
         var c = new Candidate();
@@ -59,6 +60,11 @@ public class CandidateController {
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
-
+    @PostMapping(value = "/update")
+    public ResponseEntity<Response<Void>> Update(@RequestBody Candidate candidate)
+    {
+        repository.save(candidate);
+        return ResponseEntity.ok(new Response<>(null, Error.OK));
+    }
 
 }
