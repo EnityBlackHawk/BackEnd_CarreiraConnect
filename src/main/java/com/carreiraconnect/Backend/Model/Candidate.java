@@ -15,7 +15,7 @@ public class Candidate {
     private String cpf;
     private String email;
     private List<String> abilities;
-    private int period;
+    private Integer period;
     private Date birthDate;
     private String academicArea;
     private String city;

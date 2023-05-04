@@ -2,7 +2,8 @@ package com.carreiraconnect.Backend;
 
 public enum Error {
 
-    OK(0);
+    OK(0),
+    OBJECT_NOT_FOUND(1);
 
     private final int i;
 

@@ -2,16 +2,17 @@ package com.carreiraconnect.Backend.Controller;
 
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
+import com.carreiraconnect.Backend.ModelUpdater;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/candidate")
@@ -20,9 +21,7 @@ public class CandidateController {
     @Autowired
     private CandidateRepository repository;
 
-
     @PostMapping(value = "/add/Test")
-
     public String InsertTest()
     {
         var c = new Candidate();
@@ -63,7 +62,12 @@ public class CandidateController {
     @PostMapping(value = "/update")
     public ResponseEntity<Response<Void>> Update(@RequestBody Candidate candidate)
     {
-        repository.save(candidate);
+        Optional<Candidate> base = repository.findById(candidate.getId());
+        if(base.isEmpty())
+            return ResponseEntity.ok(new Response<>(null, Error.OBJECT_NOT_FOUND));
+        ModelUpdater.Update2(base.get(), candidate);
+
+        repository.save(base.get());
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
