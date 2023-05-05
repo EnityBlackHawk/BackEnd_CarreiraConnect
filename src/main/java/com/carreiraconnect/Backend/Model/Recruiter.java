@@ -4,41 +4,39 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Document
-public class Candidate {
-
+public class Recruiter {
     @Id
     private String id;
     private String name;
     private String cpf;
     private String email;
-    private List<String> abilities;
-    private Integer period;
+    private String graduation;
     private Date birthDate;
     private String academicArea;
     private String city;
+    private Company company;
     @DocumentReference
-    private List<Vacancy> vacancyApplied;
+    private List<Vacancy> vacancyManaged;
 
-    public Candidate() {
-        vacancyApplied = new ArrayList<>();
+
+    public Recruiter() {
     }
 
-    public Candidate(String id, String name, String cpf, String email, List<String> abilities, int period, Date birthDate, String academicArea, String city, List<Vacancy> vacancyApplied) {
+    public Recruiter(String id, String name, String cpf, String email, String graduation, Date birthDate, String academicArea, String city, Company company, List<Vacancy> vacancyManaged) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.email = email;
-        this.abilities = abilities;
-        this.period = period;
+        this.graduation = graduation;
         this.birthDate = birthDate;
         this.academicArea = academicArea;
         this.city = city;
-        this.vacancyApplied = vacancyApplied;
+        this.company = company;
+        this.vacancyManaged = vacancyManaged;
     }
 
     public String getId() {
@@ -73,20 +71,12 @@ public class Candidate {
         this.email = email;
     }
 
-    public List<String> getAbilities() {
-        return abilities;
+    public String getGraduation() {
+        return graduation;
     }
 
-    public void setAbilities(List<String> abilities) {
-        this.abilities = abilities;
-    }
-
-    public int getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
+    public void setGraduation(String graduation) {
+        this.graduation = graduation;
     }
 
     public Date getBirthDate() {
@@ -113,11 +103,19 @@ public class Candidate {
         this.city = city;
     }
 
-    public List<Vacancy> getVacanciesApplied() {
-        return vacancyApplied;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setVacanciesApplied(List<Vacancy> vacancyApplied) {
-        this.vacancyApplied = vacancyApplied;
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public List<Vacancy> getVacanciesManaged() {
+        return vacancyManaged;
+    }
+
+    public void setVacanciesManaged(List<Vacancy> vacancyManaged) {
+        this.vacancyManaged = vacancyManaged;
     }
 }
