@@ -2,6 +2,7 @@ package com.carreiraconnect.Backend.Controller;
 
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
+import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.ModelUpdater;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Response;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +23,31 @@ public class CandidateController {
     @Autowired
     private CandidateRepository repository;
 
+    public long getCandidates(){
+        return repository.count();
+    }
+
+    @GetMapping(value = "/stats/RegisteredCandidates")
+    public ResponseEntity<Response<Long>> candidateStats(){
+        var c = repository.count();
+        return ResponseEntity.ok(new Response<>(c, Error.OK));
+    }
+
+        @GetMapping(value = "/getAll")
+        public ResponseEntity<Response<ArrayList<String>>> getAll()
+        {
+            var unfiltered_candidates = repository.findAll();
+            var candidates = new ArrayList<String>();
+            unfiltered_candidates.forEach((c) -> {
+                candidates.add(c.getId());
+                candidates.add(c.getName());
+                candidates.add(c.getAcademicArea());
+                candidates.add(String.valueOf(c.getPeriod()));
+                candidates.add(c.getEmail());
+                candidates.add(c.getCpf());
+            });
+            return ResponseEntity.ok(new Response<>(candidates, Error.OK));
+        }
     @PostMapping(value = "/add/Test")
     public String InsertTest()
     {

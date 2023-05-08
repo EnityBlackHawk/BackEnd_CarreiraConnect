@@ -1,19 +1,25 @@
 package com.carreiraconnect.Backend.Controller;
 
 import com.carreiraconnect.Backend.Error;
+import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Company;
 import com.carreiraconnect.Backend.Model.Recruiter;
+import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.count;
 
 @RestController
 @RequestMapping(value = "api/recruiter")

@@ -77,4 +77,19 @@ public class VacanciesController {
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<Response<ArrayList<String>>> getAll()
+    {
+        var unfiltered_vacancies = repository.findAll();
+        var vacancies = new ArrayList<String>();
+        unfiltered_vacancies.forEach((v) -> {
+            vacancies.add(v.getId());
+            vacancies.add(v.getDescription());
+            vacancies.add(v.getModality());
+            vacancies.add(String.valueOf(v.getWorkload()));
+            vacancies.add(String.valueOf(v.getSalary()));
+        });
+        return ResponseEntity.ok(new Response<>(vacancies, Error.OK));
+    }
+
 }
