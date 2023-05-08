@@ -1,16 +1,11 @@
-package com.carreiraconnect.Backend.Model;
+package com.carreiraconnect.Backend.DTO;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Document
-public class Candidate {
-
+public class CandidateRegisterDTO {
     @Id
     private String id;
     private String name;
@@ -21,14 +16,12 @@ public class Candidate {
     private Date birthDate;
     private String academicArea;
     private String city;
-    @DocumentReference
-    private List<Vacancy> vacancyApplied;
+    private String password;
 
-    public Candidate() {
-        vacancyApplied = new ArrayList<>();
+    public CandidateRegisterDTO() {
     }
 
-    public Candidate(String id, String name, String cpf, String email, List<String> abilities, int period, Date birthDate, String academicArea, String city, List<Vacancy> vacancyApplied) {
+    public CandidateRegisterDTO(String id, String name, String cpf, String email, List<String> abilities, Integer period, Date birthDate, String academicArea, String city, String password) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
@@ -38,7 +31,7 @@ public class Candidate {
         this.birthDate = birthDate;
         this.academicArea = academicArea;
         this.city = city;
-        this.vacancyApplied = vacancyApplied;
+        this.password = password;
     }
 
     public String getId() {
@@ -81,11 +74,11 @@ public class Candidate {
         this.abilities = abilities;
     }
 
-    public int getPeriod() {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(int period) {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 
@@ -113,11 +106,11 @@ public class Candidate {
         this.city = city;
     }
 
-    public List<Vacancy> getVacanciesApplied() {
-        return vacancyApplied;
+    public String getPassword() {
+        return password;
     }
 
-    public void setVacanciesApplied(List<Vacancy> vacancyApplied) {
-        this.vacancyApplied = vacancyApplied;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

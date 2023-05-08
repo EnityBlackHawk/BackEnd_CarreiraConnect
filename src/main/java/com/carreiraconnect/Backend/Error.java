@@ -4,7 +4,9 @@ public enum Error {
 
     OK(0),
     OBJECT_NOT_FOUND(1),
-    ALREADY_APPLIED(2);
+    ALREADY_APPLIED(2),
+    EMAIL_ALREADY_USED(3),
+    GENERIC_ERROR(4);
 
     private final int i;
 

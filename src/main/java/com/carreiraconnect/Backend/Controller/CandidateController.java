@@ -1,12 +1,16 @@
 package com.carreiraconnect.Backend.Controller;
 
+import com.carreiraconnect.Backend.DTO.CandidateRegisterDTO;
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
+import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.ModelUpdater;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
+import com.carreiraconnect.Backend.Repository.CredentialsRepository;
 import com.carreiraconnect.Backend.Response;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,10 @@ public class CandidateController {
 
     @Autowired
     private CandidateRepository repository;
+
+
+    @Autowired
+    CredentialsController credentialsController;
 
     public long getCandidates(){
         return repository.count();
@@ -51,13 +59,46 @@ public class CandidateController {
     @PostMapping(value = "/add/Test")
     public String InsertTest()
     {
+
+
+        var c = new Candidate();
+        c.setName("Teste Senha abs");
+        c.setEmail("1234@mail.com");
+        if(credentialsController.VerifyEmail(c.getEmail()))
+        {
+            return "Email error";
+        }
+
+        var resp = repository.insert(c);
+
+        var cred = new Credentials();
+        cred.setId("1234@mail.com");
+        cred.setPassword("1234");
+        cred.setCandidateRef(resp);
+        cred.setCandidate(true);
+
+        credentialsController.Insert(cred);
         return "None";
     }
 
     @PostMapping(value = "/add")
-    public ResponseEntity<Response<Void>> Insert(@RequestBody Candidate candidate)
+    public ResponseEntity<Response<Void>> Insert(@RequestBody CandidateRegisterDTO candidateDTO)
     {
+        var modelMapper = new ModelMapper();
+        var candidate = modelMapper.map(candidateDTO, Candidate.class);
         repository.insert(candidate);
+        var cred = new Credentials();
+        cred.setId(candidate.getEmail());
+        cred.setPassword(candidateDTO.getPassword());
+        cred.setCandidateRef(candidate);
+        cred.setCandidate(true);
+
+        if(!credentialsController.Insert(cred))
+        {
+            Delete(candidate.getId());
+            return ResponseEntity.ok(new Response<>(null, Error.GENERIC_ERROR));
+        }
+
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 

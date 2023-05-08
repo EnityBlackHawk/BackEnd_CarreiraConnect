@@ -3,17 +3,16 @@ package com.carreiraconnect.Backend.Controller;
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Company;
+import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Response;
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,9 +27,14 @@ public class RecruiterController{
     @Autowired
     private RecruiterRepository repository;
 
+    @Autowired
+    private CredentialsController credentialsController;
+
     @GetMapping(value = "/add/Test")
     public String Test()
     {
+
+
         var o = new Recruiter();
         o.setName("Maria2");
         o.setCpf("000.000.000-00");
@@ -39,7 +43,20 @@ public class RecruiterController{
         o.setAcademicArea("Engenharia de Software");
         o.setCity("Dois Vizinhos-PR");
         o.setCompany(new Company("Empresa S/A", "000000000", "Soluções em software"));
+
         repository.insert(o);
+
+        var cred = new Credentials();
+        cred.setPassword("1234");
+        cred.setId(o.getEmail());
+        cred.setRecruiterRef(o);
+
+        if(!credentialsController.Insert(cred))
+        {
+            Delete(o);
+            return "Error";
+        }
+
         return "OK";
     }
 
@@ -48,6 +65,13 @@ public class RecruiterController{
     {
         var o = repository.findAll();
         return ResponseEntity.ok(new Response<>(o, Error.OK));
+    }
+
+    @PostMapping(value = "/delete")
+    public ResponseEntity<Response<Void>> Delete(@RequestBody Recruiter recruiter)
+    {
+        repository.delete(recruiter);
+        return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
 
