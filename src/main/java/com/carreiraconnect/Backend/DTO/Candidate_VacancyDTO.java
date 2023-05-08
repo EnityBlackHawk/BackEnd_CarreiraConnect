@@ -1,19 +1,13 @@
-package com.carreiraconnect.Backend.Model;
+package com.carreiraconnect.Backend.DTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.carreiraconnect.Backend.Model.Vacancy;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Document
-public class Candidate {
-
+public class Candidate_VacancyDTO {
     @Id
     private String id;
     private String name;
@@ -24,14 +18,11 @@ public class Candidate {
     private Date birthDate;
     private String academicArea;
     private String city;
-    @DocumentReference
-    private List<Vacancy> vacancyApplied;
 
-    public Candidate() {
-        vacancyApplied = new ArrayList<>();
+    public Candidate_VacancyDTO() {
     }
 
-    public Candidate(String id, String name, String cpf, String email, List<String> abilities, int period, Date birthDate, String academicArea, String city, List<Vacancy> vacancyApplied) {
+    public Candidate_VacancyDTO(String id, String name, String cpf, String email, List<String> abilities, Integer period, Date birthDate, String academicArea, String city) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
@@ -41,7 +32,6 @@ public class Candidate {
         this.birthDate = birthDate;
         this.academicArea = academicArea;
         this.city = city;
-        this.vacancyApplied = vacancyApplied;
     }
 
     public String getId() {
@@ -84,11 +74,11 @@ public class Candidate {
         this.abilities = abilities;
     }
 
-    public int getPeriod() {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(int period) {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 
@@ -114,13 +104,5 @@ public class Candidate {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public List<Vacancy> getVacanciesApplied() {
-        return vacancyApplied;
-    }
-
-    public void setVacanciesApplied(List<Vacancy> vacancyApplied) {
-        this.vacancyApplied = vacancyApplied;
     }
 }

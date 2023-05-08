@@ -1,5 +1,6 @@
 package com.carreiraconnect.Backend.Controller;
 
+import com.carreiraconnect.Backend.DTO.VacancyDTO;
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Recruiter;
@@ -7,12 +8,15 @@ import com.carreiraconnect.Backend.Model.Vacancy;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.VacanciesRepository;
 import com.carreiraconnect.Backend.Response;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -78,18 +82,18 @@ public class VacanciesController {
     }
 
     @GetMapping(value = "/getAll")
-    public ResponseEntity<Response<ArrayList<String>>> getAll()
+    public ResponseEntity<Response<List<VacancyDTO>>> GetAll_DTO()
     {
-        var unfiltered_vacancies = repository.findAll();
-        var vacancies = new ArrayList<String>();
-        unfiltered_vacancies.forEach((v) -> {
-            vacancies.add(v.getId());
-            vacancies.add(v.getDescription());
-            vacancies.add(v.getModality());
-            vacancies.add(String.valueOf(v.getWorkload()));
-            vacancies.add(String.valueOf(v.getSalary()));
-        });
-        return ResponseEntity.ok(new Response<>(vacancies, Error.OK));
+        var l_ob = repository.findAll();
+        var modelMapper = new ModelMapper();
+        var l_dto = new ArrayList<VacancyDTO>();
+        for (var ob : l_ob)
+            l_dto.add(
+                    modelMapper.map(ob, VacancyDTO.class)
+            );
+
+
+        return ResponseEntity.ok(new Response<>(l_dto, Error.OK));
     }
 
 }

@@ -1,17 +1,13 @@
-package com.carreiraconnect.Backend.Model;
+package com.carreiraconnect.Backend.DTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.carreiraconnect.Backend.Model.Candidate;
+import com.carreiraconnect.Backend.Model.Recruiter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Document
-public class Vacancy {
-
+public class VacancyDTO {
     @Id
     private String id;
     private String description;
@@ -20,16 +16,15 @@ public class Vacancy {
     private String modality;
     private Integer viewCont;
     @DocumentReference
-    private List<Candidate> candidates;
+    private List<Candidate_VacancyDTO> candidates;
     @DocumentReference
     private Recruiter recruiter;
     private List<String> categories;
 
-    public Vacancy() {
-        candidates = new ArrayList<>();
+    public VacancyDTO() {
     }
 
-    public Vacancy(String id, String description, Integer workload, Float salary, String modality, Integer viewCont, List<Candidate> candidates, Recruiter recruiter, List<String> categories) {
+    public VacancyDTO(String id, String description, Integer workload, Float salary, String modality, Integer viewCont, List<Candidate_VacancyDTO> candidates, Recruiter recruiter, List<String> categories) {
         this.id = id;
         this.description = description;
         this.workload = workload;
@@ -89,11 +84,11 @@ public class Vacancy {
         this.viewCont = viewCont;
     }
 
-    public List<Candidate> getCandidates() {
+    public List<Candidate_VacancyDTO> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(List<Candidate> candidates) {
+    public void setCandidates(List<Candidate_VacancyDTO> candidates) {
         this.candidates = candidates;
     }
 
