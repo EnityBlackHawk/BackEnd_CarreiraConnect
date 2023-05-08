@@ -1,5 +1,6 @@
 package com.carreiraconnect.Backend.Controller;
 
+import com.carreiraconnect.Backend.DTO.RecruiterRegisterDTO;
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Company;
@@ -9,6 +10,7 @@ import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Response;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -65,6 +67,22 @@ public class RecruiterController{
     {
         var o = repository.findAll();
         return ResponseEntity.ok(new Response<>(o, Error.OK));
+    }
+    @PostMapping(value = "/add")
+    public ResponseEntity<Response<Void>> Insert(@RequestBody RecruiterRegisterDTO recruiterRegisterDTO)
+    {
+        repository.insert(recruiterRegisterDTO);
+        var cred = new Credentials();
+        cred.setId(recruiterRegisterDTO.getEmail());
+        cred.setRecruiterRef(recruiterRegisterDTO);
+        cred.setPassword(recruiterRegisterDTO.getPassword());
+        if(!credentialsController.Insert(cred))
+        {
+            Delete(recruiterRegisterDTO);
+            return ResponseEntity.ok(new Response<>(null, Error.GENERIC_ERROR));
+        }
+        return ResponseEntity.ok(new Response<>(null, Error.OK));
+
     }
 
     @PostMapping(value = "/delete")
