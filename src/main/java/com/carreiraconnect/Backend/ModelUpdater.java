@@ -1,7 +1,5 @@
 package com.carreiraconnect.Backend;
 
-import org.springframework.ui.Model;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;

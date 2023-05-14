@@ -2,25 +2,17 @@ package com.carreiraconnect.Backend.Controller;
 
 import com.carreiraconnect.Backend.DTO.RecruiterRegisterDTO;
 import com.carreiraconnect.Backend.Error;
-import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Company;
 import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.Model.Recruiter;
-import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Response;
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.count;
 
 @RestController
 @RequestMapping(value = "api/recruiter")
@@ -35,8 +27,6 @@ public class RecruiterController{
     @GetMapping(value = "/add/Test")
     public String Test()
     {
-
-
         var o = new Recruiter();
         o.setName("Maria2");
         o.setCpf("000.000.000-00");

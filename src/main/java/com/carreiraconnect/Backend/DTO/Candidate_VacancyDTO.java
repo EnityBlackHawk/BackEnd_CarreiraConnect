@@ -1,8 +1,6 @@
 package com.carreiraconnect.Backend.DTO;
 
-import com.carreiraconnect.Backend.Model.Vacancy;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.Date;
 import java.util.List;

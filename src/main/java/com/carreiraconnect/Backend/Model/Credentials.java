@@ -3,8 +3,6 @@ package com.carreiraconnect.Backend.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-import java.util.concurrent.RecursiveAction;
-
 public class Credentials {
 
     @Id

@@ -4,10 +4,8 @@ import com.carreiraconnect.Backend.DTO.CandidateRegisterDTO;
 import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Credentials;
-import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.ModelUpdater;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
-import com.carreiraconnect.Backend.Repository.CredentialsRepository;
 import com.carreiraconnect.Backend.Response;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -16,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,7 +22,6 @@ public class CandidateController {
 
     @Autowired
     private CandidateRepository repository;
-
 
     @Autowired
     CredentialsController credentialsController;
@@ -41,21 +36,24 @@ public class CandidateController {
         return ResponseEntity.ok(new Response<>(c, Error.OK));
     }
 
-        @GetMapping(value = "/getAll")
-        public ResponseEntity<Response<ArrayList<String>>> getAll()
-        {
-            var unfiltered_candidates = repository.findAll();
-            var candidates = new ArrayList<String>();
-            unfiltered_candidates.forEach((c) -> {
-                candidates.add(c.getId());
-                candidates.add(c.getName());
-                candidates.add(c.getAcademicArea());
-                candidates.add(String.valueOf(c.getPeriod()));
-                candidates.add(c.getEmail());
-                candidates.add(c.getCpf());
-            });
-            return ResponseEntity.ok(new Response<>(candidates, Error.OK));
-        }
+    @GetMapping(value = "/getAll")
+    public ResponseEntity<Response<ArrayList<String>>> getAll()
+    {
+        var unfiltered_candidates = repository.findAll();
+        var candidates = new ArrayList<String>();
+
+        unfiltered_candidates.forEach((c) -> {
+            candidates.add(c.getId());
+            candidates.add(c.getName());
+            candidates.add(c.getAcademicArea());
+            candidates.add(String.valueOf(c.getPeriod()));
+            candidates.add(c.getEmail());
+            candidates.add(c.getCpf());
+        });
+
+        return ResponseEntity.ok(new Response<>(candidates, Error.OK));
+    }
+
     @PostMapping(value = "/add/Test")
     public String InsertTest()
     {
@@ -64,6 +62,7 @@ public class CandidateController {
         var c = new Candidate();
         c.setName("Teste Senha abs");
         c.setEmail("1234@mail.com");
+
         if(credentialsController.VerifyEmail(c.getEmail()))
         {
             return "Email error";
@@ -78,6 +77,7 @@ public class CandidateController {
         cred.setCandidate(true);
 
         credentialsController.Insert(cred);
+
         return "None";
     }
 
@@ -86,7 +86,9 @@ public class CandidateController {
     {
         var modelMapper = new ModelMapper();
         var candidate = modelMapper.map(candidateDTO, Candidate.class);
+
         repository.insert(candidate);
+
         var cred = new Credentials();
         cred.setId(candidate.getEmail());
         cred.setPassword(candidateDTO.getPassword());
@@ -107,6 +109,7 @@ public class CandidateController {
     {
         var oid = new ObjectId(id);
         repository.deleteById(oid);
+
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
@@ -114,8 +117,10 @@ public class CandidateController {
     public ResponseEntity<Response<Void>> Update(@RequestBody Candidate candidate)
     {
         Optional<Candidate> base = repository.findById(candidate.getId());
+
         if(base.isEmpty())
             return ResponseEntity.ok(new Response<>(null, Error.OBJECT_NOT_FOUND));
+
         ModelUpdater.Update2(base.get(), candidate);
 
         repository.save(base.get());

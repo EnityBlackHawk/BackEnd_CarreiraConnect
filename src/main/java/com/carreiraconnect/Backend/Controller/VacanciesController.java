@@ -12,12 +12,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/vacancies")
@@ -37,12 +37,14 @@ public class VacanciesController {
         o.setWorkload(20);
         o.setSalary(600.00f);
         o.setModality("Hibrido");
+
         var arr = new ArrayList<String>();
         arr.add("HTML");
         arr.add("CSS");
         arr.add("JavaScript");
         o.setCategories(arr);
         o.setRecruiter(recruiter);
+
         try
         {
             var result = repository.insert(o);
@@ -58,14 +60,17 @@ public class VacanciesController {
     {
 
         Candidate f_candidate = candidateRepository.findById(candidate.getId()).orElse(null);
+
         if(f_candidate == null)
             return ResponseEntity.ok(new Response<>(null, Error.OBJECT_NOT_FOUND));
+
         var vaga = repository.findById(id).orElse(null);
 
         if(vaga == null)
             return ResponseEntity.ok(new Response<>(null, Error.OBJECT_NOT_FOUND));
 
         var applied = f_candidate.getVacanciesApplied();
+
         if(applied.stream().anyMatch(v -> Objects.equals(v.getId(), vaga.getId())))
             return ResponseEntity.ok(new Response<>(null, Error.ALREADY_APPLIED));
 
@@ -87,13 +92,42 @@ public class VacanciesController {
         var l_ob = repository.findAll();
         var modelMapper = new ModelMapper();
         var l_dto = new ArrayList<VacancyDTO>();
+
         for (var ob : l_ob)
             l_dto.add(
                     modelMapper.map(ob, VacancyDTO.class)
             );
 
 
+
         return ResponseEntity.ok(new Response<>(l_dto, Error.OK));
+    }
+
+    @GetMapping(value = "/getAllByDescription")
+    public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByDescription(
+            @RequestParam("description") String description) {
+
+        String filterDescription = "";
+
+        if (description != null && description.length() > 0) {
+            filterDescription = ".*" + description.toLowerCase().trim() + ".*";
+        }
+
+        List<Vacancy> vacancyList = repository.findAllByDescription(filterDescription);
+
+        if (vacancyList != null && vacancyList.size() > 0) {
+            ModelMapper modelMapper = new ModelMapper();
+
+            ArrayList<VacancyDTO> arrayListVacancies = (ArrayList<VacancyDTO>) vacancyList.stream()
+                    .map(listVacancies -> modelMapper.map(listVacancies, VacancyDTO.class))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new Response<>(arrayListVacancies, Error.OK));
+
+        } else {
+            Response<List<VacancyDTO>> response = new Response<>(null, Error.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
 }
