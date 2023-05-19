@@ -103,6 +103,31 @@ public class VacanciesController {
         return ResponseEntity.ok(new Response<>(l_dto, Error.OK));
     }
 
+    @GetMapping(value = "/getBySalaryRanged")
+    public ResponseEntity<Response<List<VacancyDTO>>> getBySalaryRange(@RequestParam(required = true) String from, @RequestParam(required = false) String to)
+    {
+        float f_from = Float.parseFloat(from);
+        float f_to = (to == null || to.isBlank() || to.isEmpty()) ? Float.MAX_VALUE : Float.parseFloat(to);
+
+        var ret = new ArrayList<VacancyDTO>();
+        var result = repository.findAll().stream().filter((vacancy ->
+        {
+            var s = vacancy.getSalary();
+            return f_from <= s && s <= f_to;
+        })).toList();
+
+        ModelMapper modelMapper = new ModelMapper();
+        for(var v : result)
+            ret.add(
+                    modelMapper.map(v, VacancyDTO.class)
+            );
+
+        return ResponseEntity.ok(new Response<>(ret, Error.OK));
+
+    }
+
+
+
     @GetMapping(value = "/getAllByDescription")
     public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByDescription(
             @RequestParam("description") String description) {
