@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface VacanciesRepository extends MongoRepository<Vacancy, String> {
     @Query("{ 'description': { '$regex': ?0, '$options': 'i' } }")
-    List<Vacancy> findAllByDescription(String description);
+    List<Vacancy> findAllByInterest(String description);
+
+    List<Vacancy> findAllByCategories(List<String> categories);
 }

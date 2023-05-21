@@ -126,29 +126,45 @@ public class VacanciesController {
 
     }
 
-
-
-    @GetMapping(value = "/getAllByDescription")
-    public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByDescription(
+    @GetMapping(value = "/getAllByInterest")
+    public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByInterest(
             @RequestParam("description") String description) {
 
-        String filterDescription = "";
-
         if (description != null && description.length() > 0) {
-            filterDescription = ".*" + description.toLowerCase().trim() + ".*";
-        }
+            List<Vacancy> vacancyList = repository.findAllByInterest(description);
 
-        List<Vacancy> vacancyList = repository.findAllByDescription(filterDescription);
+            ArrayList<VacancyDTO> arrayListVacancies = new ArrayList<>();
 
-        if (vacancyList != null && vacancyList.size() > 0) {
-            ModelMapper modelMapper = new ModelMapper();
+            if (vacancyList != null && vacancyList.size() > 0) {
+                ModelMapper modelMapper = new ModelMapper();
 
-            ArrayList<VacancyDTO> arrayListVacancies = (ArrayList<VacancyDTO>) vacancyList.stream()
-                    .map(listVacancies -> modelMapper.map(listVacancies, VacancyDTO.class))
-                    .collect(Collectors.toList());
-
+                 arrayListVacancies = (ArrayList<VacancyDTO>) vacancyList.stream()
+                        .map(listVacancies -> modelMapper.map(listVacancies, VacancyDTO.class))
+                        .collect(Collectors.toList());
+            }
             return ResponseEntity.ok(new Response<>(arrayListVacancies, Error.OK));
+        } else {
+            Response<List<VacancyDTO>> response = new Response<>(null, Error.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
+    @GetMapping(value = "/getAllByTechnology")
+    public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByTechnology(
+            @RequestParam("categories") List<String> categories) {
+
+        ArrayList<VacancyDTO> arrayListVacancies;
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        if (categories != null && categories.size() > 0) {
+            List<Vacancy> vacancyList = repository.findAllByCategories(categories);
+
+            arrayListVacancies = vacancyList != null && vacancyList.size() > 0 ?
+                    (ArrayList<VacancyDTO>) vacancyList.stream()
+                            .map(listVacancies ->  modelMapper.map(listVacancies, VacancyDTO.class))
+                            .collect(Collectors.toList()) : null;
+            return ResponseEntity.ok(new Response<>(arrayListVacancies, Error.OK));
         } else {
             Response<List<VacancyDTO>> response = new Response<>(null, Error.BAD_REQUEST);
             return ResponseEntity.badRequest().body(response);
