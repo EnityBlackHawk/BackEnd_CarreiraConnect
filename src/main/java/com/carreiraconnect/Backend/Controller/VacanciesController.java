@@ -126,6 +126,29 @@ public class VacanciesController {
 
     }
 
+    @GetMapping(value = "/getByViewCount")
+    public ResponseEntity<Response<List<VacancyDTO>>> getByViewCount(@RequestParam(required = true) String from, @RequestParam(required = false) String to)
+    {
+            int f_from = Integer.parseInt(from);
+            int f_to = (to == null || to.isBlank() || to.isEmpty()) ? Integer.MAX_VALUE : Integer.parseInt(to);
+
+            var ret = new ArrayList<VacancyDTO>();
+            var result = repository.findAll().stream().filter((vacancy ->
+            {
+                var s = vacancy.getViewCont();
+                return f_from <= s && s <= f_to;
+            })).toList();
+
+            ModelMapper modelMapper = new ModelMapper();
+            for (var v : result) {
+                ret.add(
+                        modelMapper.map(v, VacancyDTO.class)
+                );
+            }
+
+            return ResponseEntity.ok(new Response<>(ret, Error.OK));
+    }
+
     @GetMapping(value = "/getAllByInterest")
     public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByInterest(
             @RequestParam("description") String description) {
