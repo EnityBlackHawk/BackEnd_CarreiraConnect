@@ -30,12 +30,6 @@ public class CandidateController {
         return repository.count();
     }
 
-    @GetMapping(value = "/stats/RegisteredCandidates")
-    public ResponseEntity<Response<Long>> candidateStats(){
-        var c = repository.count();
-        return ResponseEntity.ok(new Response<>(c, Error.OK));
-    }
-
     @GetMapping(value = "/getAll")
     public ResponseEntity<Response<ArrayList<String>>> getAll()
     {
