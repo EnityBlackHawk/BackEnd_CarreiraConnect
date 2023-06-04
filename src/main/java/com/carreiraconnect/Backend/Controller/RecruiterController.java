@@ -5,14 +5,21 @@ import com.carreiraconnect.Backend.Error;
 import com.carreiraconnect.Backend.Model.Company;
 import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.Model.Recruiter;
+import com.carreiraconnect.Backend.Model.Vacancy;
+import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
+import com.carreiraconnect.Backend.Repository.VacanciesRepository;
 import com.carreiraconnect.Backend.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static java.util.Objects.isNull;
 
 @RestController
 @RequestMapping(value = "api/recruiter")
@@ -21,6 +28,39 @@ public class RecruiterController{
     @Autowired
     private RecruiterRepository repository;
 
+    @Autowired
+    private CandidateRepository candidateRepository;
+
+    @Autowired
+    private VacanciesRepository vacanciesRepository;
+
+    @GetMapping(value = "/stats/registeredCandidates")
+    public ResponseEntity<Response<Long>> candidateStats(){
+        var c = candidateRepository.count();
+        return ResponseEntity.ok(new Response<>(c, Error.OK));
+    }
+
+    @GetMapping(value = "/stats/vacancyStats/{id}")
+    public ResponseEntity<Response<List<String>>> stats(@PathVariable(value = "id") String id){
+        var vac_stats = new ArrayList<String>();
+        float engagement;
+        var vacancy = vacanciesRepository.findById(id);
+
+        if(vacancy.isPresent()){
+            //Coverter valores NULL para 0
+            var viewCont = vacancy.get().getViewCont();
+            var candidates = vacancy.get().getCandidates().size();
+            if(isNull(viewCont)){viewCont = 0;}
+            Consumer<? super Vacancy> sv;
+            vac_stats.add(String.valueOf(viewCont));
+            vac_stats.add(String.valueOf(candidates));
+            //Métrica de Engajamento = ViewCount/Candidates
+            engagement =  (float) viewCont / candidates;
+            vac_stats.add(String.valueOf(engagement));
+            return ResponseEntity.ok(new Response<>(vac_stats, Error.OK));
+        }
+        return ResponseEntity.ok(new Response<>(vac_stats, Error.OK));
+    }
     @Autowired
     private CredentialsController credentialsController;
 
