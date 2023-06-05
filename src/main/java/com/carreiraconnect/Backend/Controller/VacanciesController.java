@@ -6,6 +6,7 @@ import com.carreiraconnect.Backend.Model.Candidate;
 import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.Model.Vacancy;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
+import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Repository.VacanciesRepository;
 import com.carreiraconnect.Backend.Response;
 import io.swagger.annotations.Api;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,10 +34,12 @@ public class VacanciesController {
     @Autowired
     private CandidateRepository candidateRepository;
 
+    @Autowired
+    private RecruiterRepository recruiterRepository;
+
     @PostMapping(value = "/add/Test/{id}")
     @ApiOperation(value = "Inserts a new vacancy with predefined attributes and the id sent in the request body")
-    public String Test(@RequestBody Recruiter recruiter)
-    {
+    public String Test(@RequestBody Recruiter recruiter) {
         var o = new Vacancy();
         o.setDescription("Vaga para desenvolvedor");
         o.setWorkload(20);
@@ -49,14 +53,30 @@ public class VacanciesController {
         o.setCategories(arr);
         o.setRecruiter(recruiter);
 
-        try
-        {
+        try {
             var result = repository.insert(o);
-        }catch (DataIntegrityViolationException e)
-        {
+        } catch (DataIntegrityViolationException e) {
             return "Erro";
         }
         return "OK";
+    }
+
+    @PostMapping(value = "/add")
+    @ApiOperation(value = "Inserts a new vacancy")
+    public ResponseEntity<Response<Void>> Add(@RequestBody VacancyDTO vacancy)
+    {
+        ModelMapper mm = new ModelMapper();
+        var m_v = mm.map(vacancy, Vacancy.class);
+        var r = recruiterRepository.findById(vacancy.getRecruiter().getId()).orElseThrow();
+        m_v = repository.save(m_v);
+
+        if(r.getVacanciesManaged() == null)
+            r.setVacanciesManaged(new ArrayList<>());
+        r.getVacanciesManaged().add(m_v);
+
+        recruiterRepository.save(r);
+
+        return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
 
     @PostMapping(value = "/apply/{id}")

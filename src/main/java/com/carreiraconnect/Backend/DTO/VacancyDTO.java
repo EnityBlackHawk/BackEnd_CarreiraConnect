@@ -2,6 +2,7 @@ package com.carreiraconnect.Backend.DTO;
 
 import com.carreiraconnect.Backend.Model.Recruiter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;

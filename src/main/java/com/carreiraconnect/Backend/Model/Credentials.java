@@ -1,6 +1,7 @@
 package com.carreiraconnect.Backend.Model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Credentials {
@@ -11,8 +12,10 @@ public class Credentials {
 
     private Boolean isCandidate;
     @Field
+    @DBRef
     private Candidate candidateRef;
     @Field
+    @DBRef
     private Recruiter recruiterRef;
 
 

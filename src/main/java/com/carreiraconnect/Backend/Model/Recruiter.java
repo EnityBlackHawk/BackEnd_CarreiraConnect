@@ -1,6 +1,7 @@
 package com.carreiraconnect.Backend.Model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -21,6 +22,7 @@ public class Recruiter {
     private String city;
     private Company company;
     @Field
+    @DBRef
     private List<Vacancy> vacancyManaged;
 
 
