@@ -2,7 +2,7 @@ package com.carreiraconnect.Backend.Model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Recruiter {
     private String academicArea;
     private String city;
     private Company company;
-    @DocumentReference
+    @Field
     private List<Vacancy> vacancyManaged;
 
 

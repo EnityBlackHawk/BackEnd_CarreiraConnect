@@ -7,6 +7,8 @@ import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.ModelUpdater;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Response;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "api/candidate")
+@Api(tags = "Candidate")
 public class CandidateController {
 
     @Autowired
@@ -31,12 +34,14 @@ public class CandidateController {
     }
 
     @GetMapping(value = "/stats/RegisteredCandidates")
+    @ApiOperation(value = "Returns the the sum of all registered candidates")
     public ResponseEntity<Response<Long>> candidateStats(){
         var c = repository.count();
         return ResponseEntity.ok(new Response<>(c, Error.OK));
     }
 
     @GetMapping(value = "/getAll")
+    @ApiOperation(value = "Returns all candidates")
     public ResponseEntity<Response<ArrayList<String>>> getAll()
     {
         var unfiltered_candidates = repository.findAll();
@@ -55,6 +60,7 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/add/Test")
+    @ApiOperation(value = "Inserts a new candidate with predefined attributes")
     public String InsertTest()
     {
 
@@ -82,6 +88,7 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/add")
+    @ApiOperation(value = "Inserts a new candidate according to the attributes sent in the request body JSON")
     public ResponseEntity<Response<Void>> Insert(@RequestBody CandidateRegisterDTO candidateDTO)
     {
         var modelMapper = new ModelMapper();
@@ -105,6 +112,7 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/delete/{id}")
+    @ApiOperation(value = "Delete a candidate by your id")
     public ResponseEntity<Response<Void>> Delete(@PathVariable String id)
     {
         var oid = new ObjectId(id);
@@ -114,6 +122,7 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/update")
+    @ApiOperation(value = "Update a candidate register according to the attributes sent in the request body JSON")
     public ResponseEntity<Response<Void>> Update(@RequestBody Candidate candidate)
     {
         Optional<Candidate> base = repository.findById(candidate.getId());

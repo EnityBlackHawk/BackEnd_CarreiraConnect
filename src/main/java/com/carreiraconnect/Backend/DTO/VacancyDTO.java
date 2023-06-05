@@ -2,7 +2,7 @@ package com.carreiraconnect.Backend.DTO;
 
 import com.carreiraconnect.Backend.Model.Recruiter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class VacancyDTO {
     private Float salary;
     private String modality;
     private Integer viewCont;
-    @DocumentReference
+    @Field
     private List<Candidate_VacancyDTO> candidates;
-    @DocumentReference
+    @Field
     private Recruiter recruiter;
     private List<String> categories;
 

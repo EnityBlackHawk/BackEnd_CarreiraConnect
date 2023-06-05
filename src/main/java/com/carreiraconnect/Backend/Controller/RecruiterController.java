@@ -7,6 +7,8 @@ import com.carreiraconnect.Backend.Model.Credentials;
 import com.carreiraconnect.Backend.Model.Recruiter;
 import com.carreiraconnect.Backend.Repository.RecruiterRepository;
 import com.carreiraconnect.Backend.Response;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/recruiter")
+@Api(tags = "Recruiter")
 public class RecruiterController{
 
     @Autowired
@@ -25,6 +28,7 @@ public class RecruiterController{
     private CredentialsController credentialsController;
 
     @GetMapping(value = "/add/Test")
+    @ApiOperation(value = "Inserts a new recruiter with predefined attributes")
     public String Test()
     {
         var o = new Recruiter();
@@ -53,12 +57,15 @@ public class RecruiterController{
     }
 
     @GetMapping(value = "/getAll")
+    @ApiOperation(value = "Returns all recruiters registered")
     public ResponseEntity<Response<List<Recruiter>>> GetAll()
     {
         var o = repository.findAll();
         return ResponseEntity.ok(new Response<>(o, Error.OK));
     }
+
     @PostMapping(value = "/add")
+    @ApiOperation(value = "Inserts a new recruiter according to the attributes sent in the request body JSON")
     public ResponseEntity<Response<Void>> Insert(@RequestBody RecruiterRegisterDTO recruiterRegisterDTO)
     {
         repository.insert(recruiterRegisterDTO);
@@ -76,11 +83,10 @@ public class RecruiterController{
     }
 
     @PostMapping(value = "/delete")
+    @ApiOperation(value = "Delete a recruiter according to the attributes sent in the request body JSON")
     public ResponseEntity<Response<Void>> Delete(@RequestBody Recruiter recruiter)
     {
         repository.delete(recruiter);
         return ResponseEntity.ok(new Response<>(null, Error.OK));
     }
-
-
 }

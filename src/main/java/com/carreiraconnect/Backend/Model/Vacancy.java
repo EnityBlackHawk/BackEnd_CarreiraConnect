@@ -2,7 +2,7 @@ package com.carreiraconnect.Backend.Model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ public class Vacancy {
     private Float salary;
     private String modality;
     private Integer viewCont;
-    @DocumentReference
+    @Field
     private List<Candidate> candidates;
-    @DocumentReference
+    @Field
     private Recruiter recruiter;
     private List<String> categories;
 

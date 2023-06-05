@@ -2,7 +2,7 @@ package com.carreiraconnect.Backend.Model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,7 @@ public class Candidate {
     private Date birthDate;
     private String academicArea;
     private String city;
-    @DocumentReference
+    @Field
     private List<Vacancy> vacancyApplied;
 
     public Candidate() {

@@ -8,6 +8,8 @@ import com.carreiraconnect.Backend.Model.Vacancy;
 import com.carreiraconnect.Backend.Repository.CandidateRepository;
 import com.carreiraconnect.Backend.Repository.VacanciesRepository;
 import com.carreiraconnect.Backend.Response;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/vacancies")
+@Api(tags = "Vacancies")
 public class VacanciesController {
 
     @Autowired
@@ -30,6 +33,7 @@ public class VacanciesController {
     private CandidateRepository candidateRepository;
 
     @PostMapping(value = "/add/Test/{id}")
+    @ApiOperation(value = "Inserts a new vacancy with predefined attributes and the id sent in the request body")
     public String Test(@RequestBody Recruiter recruiter)
     {
         var o = new Vacancy();
@@ -56,6 +60,7 @@ public class VacanciesController {
     }
 
     @PostMapping(value = "/apply/{id}")
+    @ApiOperation(value = "Applies for the candidate sent in the requisition body to the job id passed in the requisition")
     public ResponseEntity<Response<Void>> Apply(@PathVariable String id, @RequestBody Candidate candidate)
     {
 
@@ -87,6 +92,7 @@ public class VacanciesController {
     }
 
     @GetMapping(value = "/getAll")
+    @ApiOperation(value = "Returns all the vacancies registered")
     public ResponseEntity<Response<List<VacancyDTO>>> GetAll_DTO()
     {
         var l_ob = repository.findAll();
@@ -104,6 +110,7 @@ public class VacanciesController {
     }
 
     @GetMapping(value = "/getBySalaryRanged")
+    @ApiOperation(value = "Returns all the vacancies by salary range according to the parameter passed in the request")
     public ResponseEntity<Response<List<VacancyDTO>>> getBySalaryRange(@RequestParam(required = true) String from, @RequestParam(required = false) String to)
     {
         float f_from = Float.parseFloat(from);
@@ -127,6 +134,7 @@ public class VacanciesController {
     }
 
     @GetMapping(value = "/getAllByInterest")
+    @ApiOperation(value = "Returns all vacancies by interest or description according to the description in the request")
     public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByInterest(
             @RequestParam("description") String description) {
 
@@ -150,6 +158,7 @@ public class VacanciesController {
     }
 
     @GetMapping(value = "/getAllByTechnology")
+    @ApiOperation(value = "Returns all vacancies by technology according to the categories sent in the request")
     public ResponseEntity<Response<List<VacancyDTO>>> getAllVacanciesByTechnology(
             @RequestParam("categories") List<String> categories) {
 
