@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +33,48 @@ public class CandidateController {
 
     public long getCandidates(){
         return repository.count();
+    }
+
+
+    @GetMapping(value = "stats/MostPopularAbilities")
+    public ResponseEntity<Response<HashMap<String, Integer>>> MostPopularAbilities()
+    {
+        var hm = new HashMap<String, Integer>();
+        for(var x : repository.findAll())
+        {
+            List<String> hab = x.getAbilities();
+            if(hab != null)
+            {
+                for(var y : x.getAbilities())
+                {
+                    if(hm.containsKey(y))
+                        hm.replace(y, hm.get(y) + 1);
+                    else
+                        hm.put(y, 1);
+                }
+            }
+
+        }
+
+        var finalHM = new HashMap<String, Integer>();
+        int maxValue = 0;
+        String maxKey = "";
+        var totalSize = hm.size();
+        for(int i = 0; i < totalSize; i++)
+        {
+            for(String x : hm.keySet())
+            {
+                if(hm.get(x) > maxValue)
+                {
+                    maxValue = hm.get(x);
+                    maxKey = x;
+                }
+            }
+            finalHM.put(maxKey, maxValue);
+            hm.remove(maxKey);
+            maxValue = 0;
+        }
+        return ResponseEntity.ok(new Response<>(finalHM, Error.OK));
     }
 
     @GetMapping(value = "/stats/RegisteredCandidates")
